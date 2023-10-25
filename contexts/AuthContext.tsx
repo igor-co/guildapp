@@ -17,7 +17,7 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loggedAddress, setLoggedAddress] = useState<string[]>([]);
 
-  // 
+  //
   const clearLoggedAddress = () => {
     setLoggedAddress([]);
   };

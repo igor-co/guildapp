@@ -30,8 +30,9 @@ function Nav() {
   const authContext = useContext(AuthContext);
   console.log('authContext', authContext);
   const { walletAddress, connectWallet, disconnect } = useSigningClient();
+  console.log(authContext.loggedAddress)
   const handleConnect = () => {
-    if (walletAddress.length === 0) {
+    if (authContext.loggedAddress.length === 0) {
       connectWallet();
       Router.push('/');
     } else {
@@ -53,9 +54,7 @@ function Nav() {
   const renderNavOptions = () => {
     return (
       <Box>
-        <Button variant="outlined" onClick={handleConnect}>
-          Log out: {shortAddress(walletAddress)}
-        </Button>
+        Wallet: {shortAddress(authContext.loggedAddress[0])}
         <IconButton size="large">
           <Menu />
         </IconButton>
@@ -87,7 +86,7 @@ function Nav() {
           </StyledLink>
         </LogoContainer>
         <ButtonContainer>
-          {walletAddress ? (
+          {authContext.loggedAddress[0] ? (
             renderNavOptions()
           ) : (
             <Button variant="outlined" color="primary" onClick={handleConnect}>
