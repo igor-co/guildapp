@@ -147,7 +147,7 @@ const GuildProfile: NextPage = () => {
         console.log("Query NFT's Error" + error)
       })
   }
-  queryNFTs();
+  //queryNFTs();
 
   return (
     <>
@@ -197,6 +197,9 @@ const GuildProfile: NextPage = () => {
             ))}
           </li>
         </Paper>
+        <Button variant="contained" onClick={queryNFTs}>
+            Check NFT
+          </Button>
         <code>
             {nftList && JSON.stringify(nftList)}
               </code>
