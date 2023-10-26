@@ -2,10 +2,20 @@ import { ReactNode } from 'react';
 
 import Image from 'next/image';
 
-import { Box, Card, CardContent, Container, Typography } from '@mui/material';
+import {
+  Box,
+  Card,
+  CardContent,
+  Container,
+  Grid,
+  Typography,
+} from '@mui/material';
 import { SIZES } from 'pages/theme';
 import { CallToActionButtons } from './Buttons/CallToActionButtons';
 import styled from '@emotion/styled';
+import GuildCard from './GuildCard';
+import { useRouter } from 'next/router';
+import { useGetGuildsList } from 'hooks/useGetGuildsList';
 
 type Props = {
   children: ReactNode;
@@ -14,7 +24,7 @@ type Props = {
 };
 
 const VideoBackgroundContainer = styled.div`
-  width: 100%;
+  width: 100vw;
   padding: 50px;
   overflow: hidden;
 `;
@@ -23,8 +33,8 @@ const BackgroundVideo = styled.video`
   position: absolute;
   top: 50%;
   left: 50%;
-  min-width: 100%;
-  min-height: 100%;
+  min-width: 100vw;
+  min-height: 100vh;
   width: auto;
   height: auto;
   z-index: -1;
@@ -59,6 +69,9 @@ const CardComponent = ({
 };
 
 const Main = () => {
+  const router = useRouter();
+
+  const { fakeList } = useGetGuildsList();
   return (
     <>
       <VideoBackgroundContainer>
@@ -158,6 +171,7 @@ const Main = () => {
       <Box
         sx={{
           marginTop: '150px',
+          marginBottom: '80px',
           width: '100vw',
           paddingLeft: `${SIZES['lineHeight'] * 2}rem`,
           paddingRight: `${SIZES['lineHeight'] * 2}rem`,
@@ -166,11 +180,30 @@ const Main = () => {
         <Typography variant="h3" align="left" gutterBottom>
           JOIN THE GUILD NATION
         </Typography>
-        <Typography variant="body1" align="left" maxWidth={900}>
+        <Typography variant="body1" align="left" maxWidth={900} gutterBottom>
           Guild Hub enables all types of gamers and metaverse players to plug
           into a collaborative ecosystem where everyone can join a guild or
           create and manage their own.
         </Typography>
+      </Box>
+      <Box sx={{ margin: SIZES['lineHeight'] }}>
+        <Grid container spacing={4}>
+          {fakeList.slice(0, 6).map((guild) => (
+            <Grid item xs={12} md={6} lg={4} key={guild.name}>
+              <GuildCard
+                handleClick={() => router.push(`/public-guild-view`)}
+                guild={guild}
+                key={guild.name}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+
+      <Box
+        sx={{ display: 'flex', justifyContent: 'center', marginTope: '150px' }}
+      >
+        <CallToActionButtons />
       </Box>
     </>
   );

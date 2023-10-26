@@ -20,7 +20,6 @@ import { SIZES } from './theme';
 //@ts-ignore
 import type { Guild } from 'util/types';
 
-import WalletLoader from 'components/WalletLoader';
 import { AuthContext } from 'contexts/AuthContext';
 
 import { useGetGuildsList } from 'hooks/useGetGuildsList';
@@ -31,7 +30,7 @@ const ExploreGuilds: NextPage = () => {
   const [makeFake, setMakeFake] = useState(false);
 
   const router = useRouter();
-  const { walletAddress, signingClient } = useSigningClient();
+
   const { fakeList } = useGetGuildsList();
   const [guilds, setGuilds] = useState<Guild[]>(fakeList);
   console.log('fakedata is', fakeList);
@@ -41,7 +40,7 @@ const ExploreGuilds: NextPage = () => {
       setMakeFake(true);
       setGuilds(fakeList);
     }
-  }, []); // Dependency array
+  }, []);
 
   const [searchText, setSearchText] = useState('');
 
@@ -56,7 +55,6 @@ const ExploreGuilds: NextPage = () => {
         )
       : [];
 
-  console.log('filtered ', filteredGuilds.length);
   return (
     <>
       {
