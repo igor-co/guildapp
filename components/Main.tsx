@@ -1,9 +1,11 @@
 import { ReactNode } from 'react';
 
 import Image from 'next/image';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 import {
   Box,
+  Button,
   Card,
   CardContent,
   Container,
@@ -199,7 +201,17 @@ const Main = () => {
           ))}
         </Grid>
       </Box>
-
+      <Box
+        sx={{
+          margin: SIZES['lineHeight'],
+          display: 'flex',
+          justifyContent: 'flex-end',
+        }}
+      >
+        <Button variant="text" endIcon={<ChevronRightIcon />}>
+          View more
+        </Button>
+      </Box>
       <Box
         sx={{ display: 'flex', justifyContent: 'center', marginTope: '150px' }}
       >
