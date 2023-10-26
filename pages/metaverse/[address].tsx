@@ -1,4 +1,4 @@
-import {useEffect, useState, useCallback, useLayoutEffect} from 'react'
+import { useEffect, useState, useCallback, useLayoutEffect } from 'react'
 import { Unity, useUnityContext } from "react-unity-webgl";
 import { useRouter } from 'next/router';
 
@@ -11,6 +11,7 @@ import { useSigningClient } from 'contexts/client';
 
 
 const Metaverse = () => {
+  const { walletAddress, signingClient } = useSigningClient();
   const router = useRouter();
   const [guildAddress, setGuildAddress] = useState<string | null>(null);
   const [walletName, setWalletName] = useState<string | null>(null);
@@ -27,8 +28,8 @@ const Metaverse = () => {
 
 
   // Comunication to Unity
-  const [isReady,setIsReady] = useState(false);
-  const [isChangePage,setIsChangePage] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+  const [isChangePage, setIsChangePage] = useState(false);
 
   const { unityProvider, addEventListener, removeEventListener, sendMessage } = useUnityContext({
     loaderUrl: "../unity/Build/clientBuild.loader.js",
@@ -53,11 +54,12 @@ const Metaverse = () => {
 
   useEffect(() => {
     if (isReady) {
-      if(guildAddress)
-      {
+      if (guildAddress) {
         getMembers(guildAddress);
       }
-      
+      console.log("59:: guild address is ", guildAddress);
+      console.log(" 61::name is ", walletName);
+      sendMessage("CanvasHUD", "setName", walletName);
       //sendGuildName(walletName); // TODO: Get the name <name.guild> from function
 
       /// TODO: Get the NFTs info from the function and contrcut the array with [{NftHash, uriImage?},...]
@@ -70,15 +72,15 @@ const Metaverse = () => {
     }
   }, [isReady]);
 
-  function sendGuildName(name){
+  function sendGuildName(name) {
     sendMessage("CanvasHUD", "setName", name);
   }
 
-  function sendNFTnum(num){
+  function sendNFTnum(num) {
     sendMessage("CanvasHUD", "setNFTNumber", num);
   }
 
-  function sendNFTs(value){
+  function sendNFTs(value) {
     sendMessage("CanvasHUD", "setNFTs", value);
   }
 
@@ -106,45 +108,43 @@ const Metaverse = () => {
   useEffect(() => {
     if (walletName == null && guildAddress) {
       getMembers(guildAddress);
-      console.log("Aqui llega");
+      console.log("109 Aqui llega");
     }
   }, [walletName, guildAddress]);
 
   async function getMembers(address: string) {
-    try {
-      let membersMsg = {
-        list_members: {
-          start_after: null,
-          limit: null,
-        },
-      };
-      if(signingClient)
-      {
-        let membersList = await signingClient.queryContractSmart(
-          address,
-          membersMsg,
-        );
-        if (membersList.members) {
-          membersList.members.forEach(m => {
-            if(m.addr == walletAddress)
-            {
-              console.log(m.name);
-            }
-          });
-        } else {
-          setError('No members could be found');
-        }
+    console.log("getMembers:::");
+    let membersMsg = {
+      list_members: {
+        start_after: null,
+        limit: null,
+      },
+    };
+
+    console.log("122:::",signingClient);
+    if (signingClient) {
+      let membersList = await signingClient.queryContractSmart(
+        address,
+        membersMsg,
+      );
+      if (membersList.members) {
+        membersList.members.forEach(m => {
+          console.log("128::",m);
+          if (m.addr == walletAddress) {
+            console.log("129::", m?.name);
+            setWalletName(m?.name);
+          }
+        });
+      } else {
+        setError('No members could be found');
       }
-    } catch (err: any) {
-      setError(err.toString());
     }
   }
 
 
   //---------- NFTs ----------------
-  const { walletAddress, signingClient, coreumQueryClient } = useSigningClient();
 
-  function GetNFTs(){
+  function GetNFTs() {
     const nftClassID = "testclass2-testcore1pcf50v775jlky863sws00qlqyttq6v62r885ph"
     let nftTotal;
     coreumQueryClient?.NFTClient().NFTs({
@@ -172,11 +172,11 @@ const Metaverse = () => {
     })
       .catch((error) => {
         console.log("Query NFT's Error" + error)
-      }).then(()=>{return nftTotal;})
+      }).then(() => { return nftTotal; })
   }
 
 
-  return <div style={{ width: '100%',display: 'flex', justifyContent: 'center', alignContent: 'center'}}><Unity style={{minWidth: "92vw", minHeight: "92vh"}} unityProvider={unityProvider} /> </div>;
+  return <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignContent: 'center' }}><Unity style={{ minWidth: "92vw", minHeight: "92vh" }} unityProvider={unityProvider} /> </div>;
 };
 
 export default Metaverse;
