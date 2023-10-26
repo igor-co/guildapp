@@ -1,4 +1,4 @@
-import {useEffect, useState, useCallback, useLayoutEffect} from 'react'
+import { useEffect, useState, useCallback, useLayoutEffect } from 'react'
 import { Unity, useUnityContext } from "react-unity-webgl";
 import { useRouter } from 'next/router';
 
@@ -8,14 +8,16 @@ import { Guild, Member } from 'util/types';
 
 //NFTs
 import { useSigningClient } from 'contexts/client';
-//import {QueryNFTsResponse} from 'hooks/coreum-ts/coreum/nft/v1beta1/query';
+import { QueryNFTsResponse } from 'hooks/coreum-ts/coreum/nft/v1beta1/query';
 
 
 const Metaverse = () => {
-  const { walletAddress, signingClient } = useSigningClient();
+  const { walletAddress, signingClient, coreumQueryClient } = useSigningClient();
   const router = useRouter();
   const [guildAddress, setGuildAddress] = useState<string | null>(null);
   const [walletName, setWalletName] = useState<string | null>(null);
+  const [nftsU, setNftsU] = useState<string | null>(null);
+  const [numNft, setNumNfts] = useState<number | null>(null);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -59,22 +61,31 @@ const Metaverse = () => {
       if (guildAddress) {
         getMembers(guildAddress);
       }
-      console.log("59:: guild address is ", guildAddress);
-      console.log(" 61::name is ", walletName);
+      // console.log("59:: guild address is ", guildAddress);
+      // console.log(" 61::name is ", walletName);
       sendMessage("CanvasHUD", "setName", walletName);
       //sendGuildName(walletName); // TODO: Get the name <name.guild> from function
 
       /// TODO: Get the NFTs info from the function and contrcut the array with [{NftHash, uriImage?},...]
-      //let a = GetNFTs();
+      GetNFTs();
       //console.log("console de nfts: " + a);
       //let frutas = [{name: "manzana", cost: 10, quality: "Excelent"}, {name: "banana", cost: 5, quality: "Good"}];
       //sendNFTs(JSON.stringify(frutas));
-      sendNFTnum(5); // TODO: Get the number from the function ?? necessary?
+      // sendNFTnum(5); // TODO: Get the number from the function ?? necessary?
+
+
       //sendNFTs(JSON.stringify(frutas));
     }
   }, [isReady]);
 
-  function sendGuildName(name){
+  useEffect(() => {
+
+    sendMessage("CanvasHUD", "setNFTNumber", numNft);
+    sendMessage("CanvasHUD", "setNFTs", nftsU);
+
+  }, [numNft, numNft]);
+
+  function sendGuildName(name) {
     sendMessage("CanvasHUD", "setName", name);
   }
 
@@ -123,7 +134,7 @@ const Metaverse = () => {
       },
     };
 
-    console.log("122:::",signingClient);
+    console.log("122:::", signingClient);
     if (signingClient) {
       let membersList = await signingClient.queryContractSmart(
         address,
@@ -131,7 +142,7 @@ const Metaverse = () => {
       );
       if (membersList.members) {
         membersList.members.forEach(m => {
-          console.log("128::",m);
+          console.log("128::", m);
           if (m.addr == walletAddress) {
             console.log("129::", m?.name);
             setWalletName(m?.name);
@@ -169,12 +180,17 @@ const Metaverse = () => {
         })
       )
       //return nfts;
-      nftTotal = nfts;
-      //console.log(nfts); // Todo: How to return that to send to Unity
-    })
-      .catch((error) => {
-        console.log("Query NFT's Error" + error)
-      }).then(() => { return nftTotal; })
+      // nftTotal = nfts;
+      // console.log("nfts are ",nfts); // Todo: How to return that to send to Unity
+
+      setNumNfts(nfts.length);
+      setNftsU(JSON.stringify(nfts));
+      console.log("nft numbers", numNft, nfts.length);
+      console.log("nft strings ", nftsU, JSON.stringify(nfts));
+    });
+    // .catch((error) => {
+    //   console.log("Query NFT's Error" + error)
+    // }).then(() => { return nftTotal; })
   }
 
 
