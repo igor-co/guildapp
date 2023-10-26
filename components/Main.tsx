@@ -206,6 +206,7 @@ const Main = () => {
           margin: SIZES['lineHeight'],
           display: 'flex',
           justifyContent: 'flex-end',
+          width: '100vw',
         }}
       >
         <Button variant="text" endIcon={<ChevronRightIcon />}>
