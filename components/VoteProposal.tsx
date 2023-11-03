@@ -48,8 +48,8 @@ export const VoteProposal: React.FC = (props: IProps) => {
   const [isExpired, setIsExpired] = useState<boolean>(false);
 
   const yes_pct = () => {
-    let yes_votes = votes.map((v: Vote) => v.vote === 'Yes')
-    return (yes_votes.length / votes.length)*100
+    let yes_votes = votes.filter((v: Vote) => v.vote.toString() === "yes")
+    return Math.round((yes_votes.length / votes.length)*100)
   }// get the sum of weight for Yes / total weight
 
   async function getVotes() {
