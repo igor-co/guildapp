@@ -8,7 +8,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 import GuildMembers from './GuildMembers';
 import GuildProfile from './GuildProfile';
-import Purpose from './Purpose';
+import Purpose from './Proposal';
 import Tokens from './Tokens';
 import UserProfile from './UserProfile';
 import Vaults from './Vaults';

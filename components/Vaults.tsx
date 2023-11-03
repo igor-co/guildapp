@@ -5,6 +5,7 @@ import { Typography } from '@mui/material';
 import VaultCreator from 'components/CreateVault';
 import { GuildContext } from 'contexts/guildContext';
 import { Coin } from 'coreum/proto-ts/cosmos/base/v1beta1/coin';
+import { tokensList } from 'util/constants'
 /* 
 - TODO:
   - get NFT's
@@ -31,7 +32,6 @@ const Vaults: NextPage = () => {
   const ctx = useContext(GuildContext);
   const vaults = ctx?.guildVaults;
   const [balancesFt, setBalancesFt] = useState<VaultBalanceFt[]>([])
-  const tokensList = ["utestcore"]
 
   async function getBalancesFT(vaultAddress: string) {
     for (let t = 0; t < tokensList.length; t++) {
@@ -39,6 +39,7 @@ const Vaults: NextPage = () => {
       let bal = await signingClient?.getBalance(vaultAddress, tokenDenom)
       if (bal) {
         //console.log(`getting FT's for ${vaultAddress} is ${JSON.stringify(bal)}`)
+        //@ts-ignore
         setBalancesFt((balancesFt) => [...balancesFt, {vault: vaultAddress, balance:bal}])
       }
     }

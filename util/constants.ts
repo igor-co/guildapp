@@ -4,6 +4,8 @@ export const nsAddress =
 export const vaultCreatorCodeId = 585
 export const guildCreatorCodeId = 584
  
+export const tokensList = ["utestcore"]
+
 /* 
 cw4-group-named = 584
 cw3-flex-multisig = 585

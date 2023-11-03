@@ -5,7 +5,7 @@ import { SIZES } from 'pages/theme';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import GuildMembers from 'components/GuildMembers';
 import GuildProfile from 'components/GuildProfile';
-import Purpose from 'components/Purpose';
+import Purpose from 'components/Proposal';
 import UserProfile from 'components/UserProfile';
 import Vaults from 'components/Vaults';
 import Vote from 'components/Vote';
