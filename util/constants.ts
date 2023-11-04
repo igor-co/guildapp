@@ -4,7 +4,7 @@ export const nsAddress =
 export const vaultCreatorCodeId = 585
 export const guildCreatorCodeId = 584
  
-export const tokensList = ["utestcore"]
+export const tokensList = ["utestcore"/* , "rush" */]
 
 /* 
 cw4-group-named = 584

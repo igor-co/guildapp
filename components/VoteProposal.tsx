@@ -114,6 +114,16 @@ export const VoteProposal: React.FC = (props: IProps) => {
     setLoading(false);
   }
 
+  async function executeProposal() {
+    setLoading(true)
+    if(!signingClient) return
+    let client = new Cw3FlexMultisigNamedClient(signingClient,walletAddress,props.prop.vault)
+    let res = await client.execute({proposalId: props.prop.id}, "auto")
+    // TODO: update status of the proposal or display error message
+    if (res) {console.log("Executed!")} else {console.error("Error executing")}
+    setLoading(false)
+  }
+
   return (
     <Paper
       sx={{
@@ -151,7 +161,7 @@ export const VoteProposal: React.FC = (props: IProps) => {
                   Transaction to be Executed:
                 </Typography>
                 <Typography paragraph gutterBottom>
-                  TODO: decode tx
+                  {JSON.stringify(props.prop.msgs[0])}
                 </Typography>
               </>
             ) : (
@@ -254,6 +264,16 @@ export const VoteProposal: React.FC = (props: IProps) => {
               )}
             </>
           )}
+          {props.prop.status === "passed" &&
+            <Button
+              onClick={executeProposal}
+            >Execute</Button>
+          }
+          {props.prop.status === "rejected" &&
+            <Button
+              onClick={() => console.error("TODO")}
+            >Cancel</Button>
+          }
         </Box>
       </Box>
     </Paper>

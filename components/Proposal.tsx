@@ -8,6 +8,15 @@ import { Coin } from 'coreum/proto-ts/cosmos/base/v1beta1/coin';
 import { tokensList } from 'util/constants';
 import { MsgIssue } from 'coreum/proto-ts/coreum/asset/ft/v1/tx';
 import { FormControl, FormLabel, FormGroup, FormControlLabel, Checkbox } from "@mui/material"
+import { MsgSend } from 'coreum/proto-ts/coreum/nft/v1beta1/tx';
+import { AssetFT  } from 'coreum/tx'
+import { MsgExecuteContract } from 'hooks/generated-ts/cosmwasm/wasm/v1/tx';
+//import {
+//  MsgInstantiateContract,
+//  MsgExecuteContract,
+//  Msg
+//} from '../hooks/coreum-ts/asset/ft/v1/tx';
+  
 /* 
 TO FIX:
 - continue FT issuance
@@ -19,6 +28,7 @@ TO FIX:
 */
 const Proposal: NextPage = () => {
   const { signingClient, walletAddress } = useSigningClient()
+  
   const ctx = useContext(GuildContext)
   const vaults = ctx?.guildVaults
   const [formData, setFormData] = useState({
@@ -79,12 +89,18 @@ const Proposal: NextPage = () => {
     // validate destination address
     // create formatted msg for proposal
     let msg = {
-      typeUrl: "/coreum.asset.ft.v1.Msg...", // cant find the message for a simple FT transfer
-      value: {}
+      bank: {
+        send : {
+          from_address: vaultSelected,
+          to_address: txTransferForm.destination,
+          amount: [{denom: vaultFtSelected?.denom, amount: txTransferForm.amount}]
+        }
+      }
     }
-    // add it to msgs
+    setMsgs((msgs) => [...msgs, msg])
   }
-
+  
+  // WIP
   const handleAddIssueMsg = () => {
     let features = []
     if (issueTokenFeatures["mintable"]) {
@@ -93,25 +109,28 @@ const Proposal: NextPage = () => {
     if (issueTokenFeatures["burnable"]) {
       features.push(2)
     }
+    
     const msgIssueFT = {
           typeUrl: "/coreum.asset.ft.v1.MsgIssue",  // error (expected "custom", "bank" or "wasm")
           value: MsgIssue.fromPartial({
-              issuer: vaultSelected,
-              subunit: txIssueForm.subunit,
-              symbol: txIssueForm.symbol,
-              precision: txIssueForm.precision,
-              initialAmount: txIssueForm.initialAmount,
-              features: features,//txIssueForm.features,
-              sendCommissionRate: txIssueForm.sendCommissionRate/* `${Decimal.fromUserInput("0.5", 18).atomics}` */ // 50% input
+            issuer: vaultSelected,
+            subunit: txIssueForm.subunit,
+            symbol: txIssueForm.symbol,
+            precision: txIssueForm.precision,
+            initialAmount: txIssueForm.initialAmount,
+            features: features,//txIssueForm.features,
+            sendCommissionRate: txIssueForm.sendCommissionRate// `${Decimal.fromUserInput("0.5", 18).atomics}` / // 50% input
           }),
-      };
-      const ftDenom = `${msgIssueFT.value.subunit}-${vaultSelected}`
-      console.log(
-          `issuing ${ftDenom} FT ${JSON.stringify(msgIssueFT)}`
-      );
-      // add to msgs
-      setMsgs((msgs) => [...msgs, msgIssueFT])
+    };
+    let te = new TextEncoder()
+    let msg_e = te.encode(JSON.stringify(msgIssueFT))
+    let msg = {
+      custom: {
+        msg: msg_e
+      }
+    }
 
+    setMsgs((msgs) => [...msgs, msg])
   }
 
   async function createProposal() {
