@@ -99,7 +99,7 @@ const Proposal: NextPage = () => {
     }
     setMsgs((msgs) => [...msgs, msg])
   }
-  
+
   // WIP
   const handleAddIssueMsg = () => {
     let features = []
@@ -109,7 +109,7 @@ const Proposal: NextPage = () => {
     if (issueTokenFeatures["burnable"]) {
       features.push(2)
     }
-    
+    // try with wasm: { instantiate: {MsgInstantiate}}
     const msgIssueFT = {
           typeUrl: "/coreum.asset.ft.v1.MsgIssue",  // error (expected "custom", "bank" or "wasm")
           value: MsgIssue.fromPartial({
