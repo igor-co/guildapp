@@ -27,20 +27,19 @@ const StyledTitle = styled(Typography)`
 
 const GuildSpace: NextPage = () => {
   const [guilds, setGuilds] = useState<Guild[]>([]);
-
   const fetched = useRef<boolean>(false);
 
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
 
-  const { signingClient } = useSigningClient();
+  const { walletAddress, signingClient } = useSigningClient();
 
   async function getContracts() {
     setLoading(true);
     //@ts-ignore
     let data = await signingClient.getContracts(guildCreatorCodeId);
-    console.log(data)
+//    console.log(data)
     let list = data.map((x) => {
       return x;
     });
@@ -62,24 +61,30 @@ const GuildSpace: NextPage = () => {
       );
 
       if (membersList?.members) {
-        guild_data.member = membersList.members;
-        guild_data.member_count = membersList.members.length;
-      } else {
-        setError('No members could be found');
+        //console.log(`for guild ${guild_address} members is ${JSON.stringify(membersList)}`)
+        let isMember = membersList.members.some((m) => m.addr === walletAddress)
+        if (isMember) {
+          guild_data.member = membersList.members;
+          guild_data.member_count = membersList.members.length;
+          acu.push(guild_data);
+        }
       }
-
-      acu.push(guild_data);
+      // else {
+      //  setError('No members could be found');
+      //}
+      // quickly filter the guilds that we are a member
+      
     }
     setGuilds(acu);
     setLoading(false);
   }
 
   useEffect(() => {
-    if (signingClient && !fetched.current) {
+    if (signingClient && !fetched.current && walletAddress) {
       getContracts();
       fetched.current = true;
     }
-  }, [signingClient, fetched]);
+  }, [signingClient, fetched, walletAddress]);
 
   if (loading) {
     return (
@@ -129,7 +134,7 @@ const GuildSpace: NextPage = () => {
               {guilds.length === 1 ? 'guild' : 'guilds'}
             </StyledTitle>
           </Box>
-          <Grid container spacing={4}>
+          <Grid container spacing={4} key="list">
             {guilds.map((guild) => (
               <Grid item xs={12} md={6} key={guild.name}>
                 <GuildCard
