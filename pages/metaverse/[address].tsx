@@ -59,7 +59,7 @@ const Metaverse = () => {
         getMembers(guildAddress);
       }
 
-      walletName ? sendMessage("CanvasHUD", "setName", walletName) : router.push(`/`); // ????
+      walletName ? sendMessage("CanvasHUD", "setName", walletName) : sendMessage("CanvasHUD", "setName", "Unknown"); // ????
       
 
       /// TODO: Get the NFTs info from the function and contrcut the array with [{NftHash, uriImage?},...]
