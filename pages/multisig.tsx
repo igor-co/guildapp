@@ -96,7 +96,7 @@ const Multisig: NextPage = () => {
     if (res && res.contractAddress) {
       let contractAddress = res.contractAddress;
       if (contractAddress) {
-        router.push(`management/${contractAddress}`);
+        router.push(`guild-space/`);
         //setContractCreated(contractAddress);
       }
     } else {
