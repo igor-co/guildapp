@@ -183,20 +183,6 @@ const GuildProfile: NextPage = () => {
 
           {/* You can continue to add more items for Discord, Telegram, Reddit, etc... */}
         </Paper>
-        <Paper>
-          <Typography variant="h6" gutterBottom>
-            Members:
-          </Typography>
-          <li>
-            {ctx?.guildMembers?.map((member) => (
-              <ul key={member.name}>
-                <Typography variant="h6" gutterBottom key={member.name}>
-                  {member.name}
-                </Typography>
-              </ul>
-            ))}
-          </li>
-        </Paper>
         <Button variant="contained" onClick={queryNFTs}>
             Check NFT
           </Button>
