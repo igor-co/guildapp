@@ -3,9 +3,6 @@ import { Unity, useUnityContext } from "react-unity-webgl";
 import { useRouter } from 'next/router';
 
 
-// wallet name
-import { Guild, Member } from 'util/types';
-
 //NFTs
 import { useSigningClient } from 'contexts/client';
 import { QueryNFTsResponse } from 'hooks/coreum-ts/coreum/nft/v1beta1/query';
@@ -61,20 +58,12 @@ const Metaverse = () => {
       if (guildAddress) {
         getMembers(guildAddress);
       }
-      // console.log("59:: guild address is ", guildAddress);
-      // console.log(" 61::name is ", walletName);
-      sendMessage("CanvasHUD", "setName", walletName);
-      //sendGuildName(walletName); // TODO: Get the name <name.guild> from function
+
+      walletName ? sendMessage("CanvasHUD", "setName", walletName) : router.push(`/`); // ????
+      
 
       /// TODO: Get the NFTs info from the function and contrcut the array with [{NftHash, uriImage?},...]
       GetNFTs();
-      //console.log("console de nfts: " + a);
-      //let frutas = [{name: "manzana", cost: 10, quality: "Excelent"}, {name: "banana", cost: 5, quality: "Good"}];
-      //sendNFTs(JSON.stringify(frutas));
-      // sendNFTnum(5); // TODO: Get the number from the function ?? necessary?
-
-
-      //sendNFTs(JSON.stringify(frutas));
     }
   }, [isReady]);
 
@@ -121,7 +110,7 @@ const Metaverse = () => {
   useEffect(() => {
     if (walletName == null && guildAddress) {
       getMembers(guildAddress);
-      console.log("109 Aqui llega");
+      //console.log("109 Aqui llega");
     }
   }, [walletName, guildAddress]);
 
@@ -159,7 +148,6 @@ const Metaverse = () => {
 
   function GetNFTs() {
     const nftClassID = "testclass2-testcore1pcf50v775jlky863sws00qlqyttq6v62r885ph"
-    let nftTotal;
     coreumQueryClient?.NFTClient().NFTs({
       classId: nftClassID,
       owner: "testcore1pcf50v775jlky863sws00qlqyttq6v62r885ph",
